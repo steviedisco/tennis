@@ -77,6 +77,6 @@ export class game
 
     onResize(window: Window, renderService: IrenderService): void
     {
-        window.requestAnimationFrame(() => renderService.initialiseBuffers());
+        window.requestAnimationFrame(() => renderService.resizeAll());
     };
 }

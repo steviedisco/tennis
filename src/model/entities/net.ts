@@ -17,17 +17,23 @@ export class net extends framework.entity implements framework.Irenderable
         this.$renderService = global.$jsInject.get("IrenderService") as framework.IrenderService;
 
         this.canvas = this.$renderService.canvas;        
+
+        this.rectangle.colour = this.NET_COLOUR;
+
+        this.resize();
     };
 
     render(): void
     {        
-        this.rectangle.set(this.canvas.width / 2 - 1, 0, 2, 25);
-        this.rectangle.colour = this.NET_COLOUR;
-
         for (let i = 0; i < this.canvas.height; i += this.NET_LENGTH) 
         {
             this.rectangle.y = i;
             this.rectangle.render();
         }
+    };
+
+    resize(): void
+    {
+        this.rectangle.set(this.canvas.width / 2 - 1, 0, 2, 25);        
     };
 };

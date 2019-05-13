@@ -1,6 +1,11 @@
 import * as framework from "helpers/exports";
 import { Irenderable } from "helpers/exports";
 
+enum action {
+    RENDER = 'render',
+    RESIZE = 'resize'
+};
+
 export class renderService implements framework.IrenderService, framework.Iinitialisable
 {
     $configService: framework.IconfigService;
@@ -43,8 +48,15 @@ export class renderService implements framework.IrenderService, framework.Iiniti
     renderAll(): void
     {
         this.clear();
-        this.renderEntities();
+        this.actionEntities(action.RENDER);
         this.swapBuffers();
+    };
+
+    resizeAll(): void
+    {
+        this.initialiseBuffers();
+
+        this.actionEntities(action.RESIZE);
     };
 
     drawRectangle(x: number, y: number, width: number, height: number, colour: string): void
@@ -58,13 +70,24 @@ export class renderService implements framework.IrenderService, framework.Iiniti
         this.drawRectangle(0, 0, this.canvas.width, this.canvas.height, this.$configService.settings.bgColour);
     };
 
-    private renderEntities(): void
+    private actionEntities(renderAction: action): void
     {
         let entity: framework.entity = null;
+
         while((entity = this.$sceneService.getNextEntity()))
         {
-            if (this.isRenderable(entity))       
-                (entity as Irenderable).render();     
+            if (this.isRenderable(entity))  
+            {
+                switch (renderAction)     
+                {
+                    case action.RENDER:
+                        (entity as Irenderable).render();     
+                        break;
+                    case action.RESIZE:
+                        (entity as Irenderable).resize();
+                        break;
+                }                
+            }
         }
     };
 

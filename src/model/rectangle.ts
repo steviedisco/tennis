@@ -38,4 +38,6 @@ export class rectangle implements framework.Irenderable
     {
         this.$renderService.drawRectangle(this.x, this.y, this.width, this.height, this.colour);
     };
+
+    resize(): void { };
 };
