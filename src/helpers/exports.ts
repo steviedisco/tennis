@@ -25,4 +25,3 @@ export * from "model/point";
 export * from "model/rectangle";
 export * from "model/entity";
 export * from "model/entities/net";
-export { debounce } from 'ts-debounce';
