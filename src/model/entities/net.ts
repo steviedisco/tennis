@@ -3,43 +3,41 @@ import * as global from "helpers/globals";
 
 export class net extends framework.entity implements framework.Irenderable, framework.Iinitialisable
 {
-    private readonly NET_COLOUR: string = '#7b89a0';
-    private readonly NET_LENGTH: number = 25;
-    private readonly NET_GAP: number = 35;
-    private readonly HEIGHT_RATIO: number = 0.00166;
+    private static readonly NET_COLOUR: string = '#7b89a0';    
+    private static readonly NET_LENGTH: number = 25;
+    private static readonly NET_GAP: number = 35;
+    private static readonly HEIGHT_RATIO: number = 0.00166;
 
-    private $renderService: framework.IrenderService;
+    private canvas: HTMLCanvasElement;
 
-    constructor(IrenderService: framework.IrenderService)
+    constructor()
     {
-        super();
-
-        this.$renderService = IrenderService;       
-
-        this.rectangle.colour = this.NET_COLOUR;
+        super(undefined, undefined, undefined, undefined, net.NET_COLOUR);             
     };
 
     initialise(): void
     {
+        this.canvas = this.rectangle.$renderService.canvas;
+
         this.resize();
     };
 
     render(): void
     {        
-        for (let i = 0; i < this.$renderService.canvas.height; i += this.resizeRatio(this.NET_GAP)) 
+        for (let i = 0; i < this.canvas.height; i += this.resizeRatio(net.NET_GAP)) 
         {
-            this.rectangle.y = i;
+            this.rectangle.setPosition(undefined, i);
             this.rectangle.render();
         }
     };
 
     resize(): void
     {
-        this.rectangle.set(this.$renderService.canvas.width / 2 - 1, 0, 2, this.resizeRatio(this.NET_LENGTH));        
+        this.rectangle.set(this.canvas.width / 2 - 1, 0, 2, this.resizeRatio(net.NET_LENGTH));        
     };
 
     private resizeRatio(input: number): number
     {
-        return this.$renderService.canvas.height * this.HEIGHT_RATIO * input;
+        return this.canvas.height * net.HEIGHT_RATIO * input;
     };
 };

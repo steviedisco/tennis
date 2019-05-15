@@ -3,7 +3,7 @@ import * as framework from "helpers/exports";
 export class entity
 {    
     id: string;
-    rectangle: framework.rectangle;
+    protected rectangle: framework.rectangle;
 
     constructor(x: number = 0, y: number = 0, height: number = 1, width: number = 1, colour: string = 'pink')
     {                
