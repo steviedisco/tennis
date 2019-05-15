@@ -23,6 +23,8 @@ export class game
     run(): void
     { 
         this.registerServices();
+        this.registerEntities();
+
         this.initialise();            
 
         this.window.requestAnimationFrame(() => this.gameLoop());
@@ -39,13 +41,21 @@ export class game
         this.$inputService = global.$jsInject.register("IinputService", ["IrenderService", framework.inputService]);
     };
 
+    registerEntities(): void
+    {
+        global.$jsInject.register("net", ["IrenderService", framework.net]);
+        global.$jsInject.register("paddle", ["IrenderService", framework.net]);
+    };
+
     initialise(): void
     {
         this.$renderService.initialise([window, document]);
         this.$inputService.initialise();
 
-        this.$sceneService.addEntity(new framework.net());
-        this.$sceneService.resetEnumerator();
+        this.$sceneService.addEntity(framework.paddle.createPaddle(framework.enums.players.PLAYER1));
+        this.$sceneService.addEntity(framework.paddle.createPaddle(framework.enums.players.PLAYER2));
+        this.$sceneService.finalise();
+        this.$sceneService.initialise();
 
         this.window.addEventListener("resize", () => this.onResize(this.window, this.$renderService));
     };
