@@ -1,6 +1,7 @@
 import * as framework from "helpers/exports";
+import { Iinitialisable } from "helpers/exports";
 
-export class sceneService implements framework.IsceneService
+export class sceneService implements framework.IsceneService, Iinitialisable
 {    
     protected entities: { [id: string] : framework.entity; } = {};
 
@@ -8,7 +9,7 @@ export class sceneService implements framework.IsceneService
 
     constructor()
     {
-        this.resetEnumerator();
+        this.finalise();
     };
 
     addEntity(entity: framework.entity)
@@ -33,15 +34,33 @@ export class sceneService implements framework.IsceneService
 
         if (entity == null)
         {
-            this.resetEnumerator();
+            this.finalise();
             return null;
         }
 
         return entity;
     };
 
-    resetEnumerator(): void
+    finalise(): void
     {
         this.currentIndex = Object.keys(this.entities).length - 1;
+    };
+
+    initialise(): void
+    {
+        let entity: framework.entity = null;
+
+        while((entity = this.getNextEntity()))
+        {
+            if (this.isInitialisable(entity))  
+            {
+                (entity as Iinitialisable).initialise();     
+            }
+        }
+    };
+
+    private isInitialisable(arg: any): arg is Iinitialisable 
+    {
+        return arg.render !== undefined;
     };
 };

@@ -12,4 +12,9 @@ export class entity
         this.rectangle = new framework.rectangle(colour);
         this.rectangle.set(x, y, height, width);
     };    
+
+    clone(): entity 
+    {
+        return Object.create(this);
+    }
 }

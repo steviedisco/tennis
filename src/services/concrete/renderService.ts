@@ -17,12 +17,11 @@ export class renderService implements framework.IrenderService, framework.Iiniti
     buffers: HTMLCanvasElement[]; 
 
     canvas: HTMLCanvasElement;
-    context: CanvasRenderingContext2D;
+    canvasContext: CanvasRenderingContext2D;
 
     constructor(
         IconfigService: framework.IconfigService,
-        IsceneService: framework.IsceneService
-    )
+        IsceneService: framework.IsceneService)
     {
         this.$configService = IconfigService;
         this.$sceneService = IsceneService;
@@ -61,8 +60,8 @@ export class renderService implements framework.IrenderService, framework.Iiniti
 
     drawRectangle(x: number, y: number, width: number, height: number, colour: string): void
     {
-        this.context.fillStyle = colour;
-        this.context.fillRect(x, y, width, height);
+        this.canvasContext.fillStyle = colour;
+        this.canvasContext.fillRect(x, y, width, height);
     };
 
     private clear(): void
@@ -97,7 +96,7 @@ export class renderService implements framework.IrenderService, framework.Iiniti
         this.buffers[this.bufferIndex].style.visibility = "visible";
         this.bufferIndex = 1 - this.bufferIndex;
 
-        this.getCanvasContext();
+        this.setCanvasContext();
     };
 
     initialiseBuffers(): void
@@ -111,13 +110,18 @@ export class renderService implements framework.IrenderService, framework.Iiniti
             buffer.width = this.window.innerWidth - 1;            
         });      
         
-        this.getCanvasContext();
+        this.setCanvasContext();
     };
 
-    private getCanvasContext(): void
+    getCanvasContext(): [HTMLCanvasElement, CanvasRenderingContext2D]
+    {
+        return [ this.canvas, this.canvasContext ];
+    };
+
+    private setCanvasContext(): void
     {
         this.canvas = this.buffers[this.bufferIndex];
-        this.context = this.canvas.getContext('2d');
+        this.canvasContext = this.canvas.getContext('2d');
     };    
 
     private isRenderable(arg: any): arg is Irenderable 

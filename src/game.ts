@@ -1,6 +1,5 @@
 import * as framework from "helpers/exports";
 import * as global from "helpers/globals";
-import { IrenderService } from "helpers/exports";
 
 export class game
 {
@@ -24,6 +23,8 @@ export class game
     run(): void
     { 
         this.registerServices();
+        this.registerEntities();
+
         this.initialise();            
 
         this.window.requestAnimationFrame(() => this.gameLoop());
@@ -34,18 +35,27 @@ export class game
         this.$configService = global.$jsInject.register("IconfigService", [framework.configService]);
         this.$loggerService = global.$jsInject.register("IloggerService", [this.$configService.settings.logger]);
         this.$timeService = global.$jsInject.register("ItimeService", [framework.timeService]);
-        this.$inputService = global.$jsInject.register("IinputService", [framework.inputService]);
         this.$sceneService = global.$jsInject.register("IsceneService", [framework.sceneService]);
         this.$updateService = global.$jsInject.register("IupdateService", [framework.updateService]);
         this.$renderService = global.$jsInject.register("IrenderService", ["IconfigService", "IsceneService", framework.renderService]);
+        this.$inputService = global.$jsInject.register("IinputService", ["IrenderService", framework.inputService]);
+    };
+
+    registerEntities(): void
+    {
+        global.$jsInject.register("net", ["IrenderService", framework.net]);
+        global.$jsInject.register("paddle", ["IrenderService", framework.net]);
     };
 
     initialise(): void
     {
         this.$renderService.initialise([window, document]);
+        this.$inputService.initialise();
 
-        this.$sceneService.addEntity(new framework.net());
-        this.$sceneService.resetEnumerator();
+        this.$sceneService.addEntity(framework.paddle.createPaddle(framework.enums.players.PLAYER1));
+        this.$sceneService.addEntity(framework.paddle.createPaddle(framework.enums.players.PLAYER2));
+        this.$sceneService.finalise();
+        this.$sceneService.initialise();
 
         this.window.addEventListener("resize", () => this.onResize(this.window, this.$renderService));
     };
@@ -75,7 +85,7 @@ export class game
         this.window.requestAnimationFrame(() => this.gameLoop());
     };
 
-    onResize(window: Window, renderService: IrenderService): void
+    onResize(window: Window, renderService: framework.IrenderService): void
     {
         window.requestAnimationFrame(() => renderService.resizeAll());
     };
