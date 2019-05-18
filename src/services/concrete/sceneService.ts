@@ -1,5 +1,6 @@
 import * as framework from "helpers/exports";
 import { Iinitialisable } from "helpers/exports";
+import { Irenderable } from "helpers/exports";
 
 export class sceneService implements framework.IsceneService, Iinitialisable
 {    
@@ -56,10 +57,20 @@ export class sceneService implements framework.IsceneService, Iinitialisable
             {
                 (entity as Iinitialisable).initialise();     
             }
+
+            if (this.isRenderable(entity))  
+            {
+                (entity as Irenderable).resize();     
+            }
         }
     };
 
     private isInitialisable(arg: any): arg is Iinitialisable 
+    {
+        return arg.initialise !== undefined;
+    };
+
+    private isRenderable(arg: any): arg is Irenderable 
     {
         return arg.render !== undefined;
     };

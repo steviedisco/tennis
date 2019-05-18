@@ -18,8 +18,6 @@ export class net extends framework.entity implements framework.Irenderable, fram
     initialise(): void
     {
         this.canvas = this.rectangle.$renderService.canvas;
-
-        this.resize();
     };
 
     render(): void
@@ -35,6 +33,11 @@ export class net extends framework.entity implements framework.Irenderable, fram
     {
         this.rectangle.set(this.canvas.width / 2 - 1, 0, 2, this.resizeRatio(net.NET_LENGTH));        
     };
+
+    static create(): framework.net
+    {
+        return (global.$jsInject.get("net") as framework.net).clone() as framework.net;
+    }
 
     private resizeRatio(input: number): number
     {

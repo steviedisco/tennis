@@ -4,6 +4,9 @@ export class inputService implements framework.IinputService
 {
     $renderService: framework.IrenderService;
 
+    private mouseMoveListeners: Function[] = new Array();
+    private mousePos: framework.point = new framework.point();
+
     constructor(IrenderService: framework.IrenderService)
     {
         this.$renderService = IrenderService;
@@ -11,7 +14,7 @@ export class inputService implements framework.IinputService
 
     initialise(): void
     {
-        this.registerCanvasListener("mousemove", this.calculateMousePos);
+        this.registerCanvasListener("mousemove", this.handleMouseMove);
     };
 
     process(): void
@@ -24,6 +27,11 @@ export class inputService implements framework.IinputService
             canvas.addEventListener(eventName, ((event: MouseEvent) => listener) as unknown as EventListener)   
         }   
     };
+
+    registerMouseMoveListener(func: Function): void
+    {  
+        this.mouseMoveListeners.push(func);
+    }
 
     /*
     private handleMouseMove(event): void
@@ -46,6 +54,13 @@ export class inputService implements framework.IinputService
         */
     };
 
+    private handleMouseMove(evt: MouseEvent): void
+    {
+        this.calculateMousePos(evt);
+
+        this.mouseMoveListeners.forEach((listener) => { listener(this.mousePos); })
+    };
+
     private calculateMousePos(evt: MouseEvent): void
     {
         let canvas = event.target as HTMLCanvasElement;
@@ -54,6 +69,6 @@ export class inputService implements framework.IinputService
         let mouseX = evt.clientX - rect.left - root.scrollLeft;
         let mouseY = evt.clientY - rect.top - root.scrollTop;
 
-        // this.mousePos.set(mouseX, mouseY);
+        this.mousePos.set(mouseX, mouseY);
     };
 };

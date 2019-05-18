@@ -12,4 +12,5 @@ export interface IrenderService extends framework.Iinitialisable
     resizeAll(): void;
     initialiseBuffers(): void;
     getCanvasContext(): [ HTMLCanvasElement, CanvasRenderingContext2D ];
+
 };

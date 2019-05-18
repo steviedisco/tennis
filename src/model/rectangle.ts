@@ -1,17 +1,17 @@
 import * as framework from "helpers/exports";
 import * as global from "helpers/globals";
+import { point } from "helpers/exports";
 
 export class rectangle implements framework.Irenderable
 {    
     $renderService: framework.IrenderService;
 
-    protected x: number;
-    protected y: number;
+    position: point = new point();
     protected height: number;
     protected width: number;
     protected colour: string;
 
-    constructor(colour: string) {
+    constructor(colour: string = "pink") {
         this.$renderService = global.$jsInject.get("IrenderService") as framework.IrenderService;
         this.colour = colour;
     };
@@ -19,10 +19,10 @@ export class rectangle implements framework.Irenderable
     setPosition(x: number, y: number): void
     {
         if (x != undefined)
-            this.x = x;
+            this.position.x = x;
         
         if (y != undefined)
-            this.y = y;
+            this.position.y = y;
     };
 
     setSize(width: number, height: number): void
@@ -34,6 +34,12 @@ export class rectangle implements framework.Irenderable
             this.height = height;        
     };
 
+    setColour(colour: string): void
+    {
+        if (colour != undefined)
+            this.colour = colour;      
+    };
+
     set(x: number, y: number, width: number, height: number): void
     {
         this.setPosition(x, y);
@@ -42,7 +48,7 @@ export class rectangle implements framework.Irenderable
 
     render(): void
     {
-        this.$renderService.drawRectangle(this.x, this.y, this.width, this.height, this.colour);
+        this.$renderService.drawRectangle(this.position.x, this.position.y, this.width, this.height, this.colour);
     };
 
     resize(): void { };
