@@ -5,11 +5,11 @@ export class rectangle implements framework.Irenderable
 {    
     $renderService: framework.IrenderService;
 
-    x: number;
-    y: number;
-    height: number;
-    width: number;
-    colour: string;
+    protected x: number;
+    protected y: number;
+    protected height: number;
+    protected width: number;
+    protected colour: string;
 
     constructor(colour: string) {
         this.$renderService = global.$jsInject.get("IrenderService") as framework.IrenderService;
@@ -18,14 +18,20 @@ export class rectangle implements framework.Irenderable
 
     setPosition(x: number, y: number): void
     {
-        this.x = x;
-        this.y = y;
+        if (x != undefined)
+            this.x = x;
+        
+        if (y != undefined)
+            this.y = y;
     };
 
     setSize(width: number, height: number): void
     {
-        this.width = width;
-        this.height = height;        
+        if (width != undefined)
+            this.width = width;
+
+        if (height != undefined)
+            this.height = height;        
     };
 
     set(x: number, y: number, width: number, height: number): void
