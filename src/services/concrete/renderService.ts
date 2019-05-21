@@ -16,6 +16,9 @@ export class renderService implements framework.IrenderService, framework.Iiniti
     bufferIndex: number = 0;    
     buffers: HTMLCanvasElement[]; 
 
+    overlay: HTMLCanvasElement;
+    overlayContext: CanvasRenderingContext2D;
+
     canvas: HTMLCanvasElement;
     canvasContext: CanvasRenderingContext2D;
 
@@ -40,6 +43,9 @@ export class renderService implements framework.IrenderService, framework.Iiniti
         this.buffers.forEach((buffer) => {                       
             this.document.body.appendChild(buffer);
         });
+
+        this.overlay = this.document.createElement('canvas');
+        this.document.body.appendChild(this.overlay);
 
         this.initialiseBuffers();
     };
@@ -66,6 +72,8 @@ export class renderService implements framework.IrenderService, framework.Iiniti
 
     private clear(): void
     {
+        this.overlayContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
         this.drawRectangle(0, 0, this.canvas.width, this.canvas.height, this.$configService.settings.bgColour);
     };
 
@@ -73,7 +81,7 @@ export class renderService implements framework.IrenderService, framework.Iiniti
     {
         let entity: framework.entity = null;
 
-        while((entity = this.$sceneService.getNextEntity()))
+        while ((entity = this.$sceneService.getNextEntity()))
         {
             if (this.isRenderable(entity))  
             {
@@ -109,6 +117,11 @@ export class renderService implements framework.IrenderService, framework.Iiniti
             buffer.height = this.window.innerHeight - 1;
             buffer.width = this.window.innerWidth - 1;            
         });      
+
+        this.overlay.style["z-index"] = zindex++;
+        this.overlay.style["background"] = "transparent";
+        this.overlay.height = this.window.innerHeight - 1;
+        this.overlay.width = this.window.innerWidth - 1;   
         
         this.setCanvasContext();
     };
@@ -122,6 +135,7 @@ export class renderService implements framework.IrenderService, framework.Iiniti
     {
         this.canvas = this.buffers[this.bufferIndex];
         this.canvasContext = this.canvas.getContext('2d');
+        this.overlayContext = this.overlay.getContext('2d');
     };    
 
     private isRenderable(arg: any): arg is Irenderable 

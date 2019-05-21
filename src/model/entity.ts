@@ -1,6 +1,6 @@
 import * as framework from "helpers/exports";
 
-export class entity
+export abstract class entity implements framework.Irenderable, framework.Iinitialisable
 {    
     id: string;
     protected rectangle: framework.rectangle;
@@ -11,7 +11,15 @@ export class entity
 
         this.rectangle = new framework.rectangle(colour);
         this.rectangle.set(x, y, height, width);
-    };    
+    };   
+    
+    abstract initialise(): void;
+    abstract resize(): void;
+
+    render(): void
+    {        
+        this.rectangle.render();
+    };
 
     clone(): entity 
     {

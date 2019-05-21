@@ -1,7 +1,7 @@
 import * as framework from "helpers/exports";
 import * as global from "helpers/globals";
 
-export class net extends framework.entity implements framework.Irenderable, framework.Iinitialisable
+export class net extends framework.entity 
 {
     private static readonly NET_COLOUR: string = '#7b89a0';    
     private static readonly NET_LENGTH: number = 25;

@@ -1,7 +1,7 @@
 import * as framework from "helpers/exports";
 import * as global from "helpers/globals";
 
-export class paddle extends framework.entity implements framework.Irenderable, framework.Iinitialisable
+export class paddle extends framework.entity 
 {
     player: framework.enums.players;
 
@@ -33,7 +33,7 @@ export class paddle extends framework.entity implements framework.Irenderable, f
                 (this.$renderService.canvas.height / 2) - this.halfPaddleHeight());
             
             this.rectangle.setSize(this.PADDLE_THICKNESS, this.PADDLE_HEIGHT);
-            this.rectangle.setColour("e81e2e");
+            this.rectangle.setColour("#e81e2e");
         }  
         else
         {
@@ -42,16 +42,11 @@ export class paddle extends framework.entity implements framework.Irenderable, f
 
         this.previousPosition.setFromPoint(this.rectangle.position);
 
-        this.$inputService.registerMouseMoveListener(this.setPaddlePosition);
+        this.$inputService.registerMouseMoveListener([this.setPaddlePosition, this]);
     }
 
-    render(): void
-    {        
-        this.rectangle.render();
-    };
-
     resize(): void
-    {     
+    {
     };
 
     static createPaddle(player: framework.enums.players): framework.paddle
@@ -61,9 +56,9 @@ export class paddle extends framework.entity implements framework.Irenderable, f
         return paddle;
     }
 
-    private setPaddlePosition(mousePos: framework.point): void
+    setPaddlePosition(mousePos: framework.point, _this: paddle): void
     {
-        this.rectangle.setPosition(undefined, mousePos.y - this.halfPaddleHeight());
+        _this.rectangle.setPosition(undefined, mousePos.y - _this.halfPaddleHeight());
     };
 
     private halfPaddleHeight(): number

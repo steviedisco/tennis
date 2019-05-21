@@ -4,6 +4,6 @@ export interface IinputService extends framework.Iinitialisable
 {
     process(): void;
 
-    registerCanvasListener(eventName: string, listener: Function): void;
-    registerMouseMoveListener(func: Function): void;
+    registerOverlayListener(eventName: string, listener: Function): void;
+    registerMouseMoveListener([Function, any]): void;
 };

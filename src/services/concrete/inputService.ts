@@ -4,7 +4,7 @@ export class inputService implements framework.IinputService
 {
     $renderService: framework.IrenderService;
 
-    private mouseMoveListeners: Function[] = new Array();
+    private mouseMoveListeners: [Function, any][] = new Array();
     private mousePos: framework.point = new framework.point();
 
     constructor(IrenderService: framework.IrenderService)
@@ -14,51 +14,28 @@ export class inputService implements framework.IinputService
 
     initialise(): void
     {
-        this.registerCanvasListener("mousemove", this.handleMouseMove);
+        this.registerOverlayListener("mousemove", this.handleMouseMove);
     };
 
     process(): void
     {
     };
 
-    registerCanvasListener(eventName: string, listener: Function): void
+    registerOverlayListener(eventName: string, listener: Function): void
     {
-        for (let canvas of this.$renderService.buffers) {
-            canvas.addEventListener(eventName, ((event: MouseEvent) => listener) as unknown as EventListener)   
-        }   
+        this.$renderService.overlay.addEventListener(eventName, ((event: CustomEvent) => { listener(event, this) }) as EventListener);
     };
-
-    registerMouseMoveListener(func: Function): void
+    
+    registerMouseMoveListener(listener: [Function, any]): void
     {  
-        this.mouseMoveListeners.push(func);
+        this.mouseMoveListeners.push(listener);
     }
 
-    /*
-    private handleMouseMove(event): void
+    handleMouseMove(evt: MouseEvent, _this: inputService): void
     {
-        this.calculateMousePos(event);
-        // paddle1Pos.y = mousePos.y - (PADDLE_HEIGHT/2);
-    };
-    */
+        _this.calculateMousePos(evt);
 
-    private handleMouseClick(event: MouseEvent): void
-    {
-        /*
-        if(showingWinScreen) {
-            player1Score = 0;
-            player2Score = 0;
-            showingWinScreen = false;
-            isOutOfPlay = true;
-            ballReset();
-        }
-        */
-    };
-
-    private handleMouseMove(evt: MouseEvent): void
-    {
-        this.calculateMousePos(evt);
-
-        this.mouseMoveListeners.forEach((listener) => { listener(this.mousePos); })
+        _this.mouseMoveListeners.forEach(([listener, _listener]) => { listener(_this.mousePos, _listener); })
     };
 
     private calculateMousePos(evt: MouseEvent): void

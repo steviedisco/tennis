@@ -5,6 +5,7 @@ export interface IrenderService extends framework.Iinitialisable
     canvas: HTMLCanvasElement;
     canvasContext: CanvasRenderingContext2D;
     buffers: HTMLCanvasElement[]; 
+    overlay: HTMLCanvasElement;
     
     drawRectangle(x: number, y: number, width: number, height: number, colour: string): void;
 
