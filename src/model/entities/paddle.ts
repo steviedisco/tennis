@@ -12,37 +12,42 @@ export class paddle extends framework.entity implements framework.Irenderable, f
     private readonly ANGLE_MODIFIER: number = 0.1275;
 
     private $renderService: framework.IrenderService;
+    private $inputService: framework.IinputService;
 
-    private position: framework.point;
-    private previousPosition: framework.point;
+    private previousPosition: framework.point = new framework.point();
 
-    constructor(IrenderService: framework.IrenderService)
+    constructor(IrenderService: framework.IrenderService, IinputService: framework.IinputService)
     {
         super();
 
         this.$renderService = IrenderService;
+        this.$inputService = IinputService;
     };
 
     initialise(): void
     {
         if (this.player == framework.enums.players.PLAYER1)
         {
-            this.position = new framework.point(
+            this.rectangle.setPosition(
                 2 * this.PADDLE_THICKNESS, 
                 (this.$renderService.canvas.height / 2) - this.halfPaddleHeight());
+            
+            this.rectangle.setSize(this.PADDLE_THICKNESS, this.PADDLE_HEIGHT);
+            this.rectangle.setColour("e81e2e");
         }  
         else
         {
+            // TODO
         }              
 
-        this.previousPosition = new framework.point();
-        this.previousPosition.setFromPoint(this.position);
+        this.previousPosition.setFromPoint(this.rectangle.position);
 
-        this.resize();
+        this.$inputService.registerMouseMoveListener(this.setPaddlePosition);
     }
 
     render(): void
     {        
+        this.rectangle.render();
     };
 
     resize(): void
@@ -51,10 +56,15 @@ export class paddle extends framework.entity implements framework.Irenderable, f
 
     static createPaddle(player: framework.enums.players): framework.paddle
     {
-        let paddle = (global.$jsInject.get("net") as framework.paddle).clone() as framework.paddle;
+        let paddle = (global.$jsInject.get("paddle") as framework.paddle).clone() as framework.paddle;
         paddle.player = player;
         return paddle;
     }
+
+    private setPaddlePosition(mousePos: framework.point): void
+    {
+        this.rectangle.setPosition(undefined, mousePos.y - this.halfPaddleHeight());
+    };
 
     private halfPaddleHeight(): number
     {

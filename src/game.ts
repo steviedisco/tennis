@@ -44,7 +44,7 @@ export class game
     registerEntities(): void
     {
         global.$jsInject.register("net", ["IrenderService", framework.net]);
-        global.$jsInject.register("paddle", ["IrenderService", framework.net]);
+        global.$jsInject.register("paddle", ["IrenderService", "IinputService", framework.paddle]);
     };
 
     initialise(): void
@@ -52,8 +52,9 @@ export class game
         this.$renderService.initialise([window, document]);
         this.$inputService.initialise();
 
+        this.$sceneService.addEntity(framework.net.create());
         this.$sceneService.addEntity(framework.paddle.createPaddle(framework.enums.players.PLAYER1));
-        this.$sceneService.addEntity(framework.paddle.createPaddle(framework.enums.players.PLAYER2));
+        // this.$sceneService.addEntity(framework.paddle.createPaddle(framework.enums.players.PLAYER2));
         this.$sceneService.finalise();
         this.$sceneService.initialise();
 
