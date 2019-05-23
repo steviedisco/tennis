@@ -17,3 +17,7 @@ export class helpers
         return Math.floor(Math.random() * length)
     };
 };
+
+export function staticDecorator<T>() {
+    return (constructor: T) => {};
+}

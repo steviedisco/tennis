@@ -1,5 +1,8 @@
 import * as framework from "helpers/exports";
+import * as global from "helpers/globals";
+import { staticDecorator } from "helpers/exports";
 
+@staticDecorator<framework.Icreateable>()
 export abstract class entity implements framework.Irenderable, framework.Iinitialisable
 {    
     id: string;
@@ -13,6 +16,11 @@ export abstract class entity implements framework.Irenderable, framework.Iinitia
         this.rectangle.set(x, y, height, width);
     };   
     
+    static create<T extends entity>(name: string): entity 
+    {
+        return (global.$jsInject.get(name) as T).clone() as T; 
+    };
+
     abstract initialise(): void;
     abstract resize(): void;
 

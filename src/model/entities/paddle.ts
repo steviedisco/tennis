@@ -49,9 +49,9 @@ export class paddle extends framework.entity
     {
     };
 
-    static createPaddle(player: framework.enums.players): framework.paddle
+    static create(player: framework.enums.players): framework.paddle
     {
-        let paddle = (global.$jsInject.get("paddle") as framework.paddle).clone() as framework.paddle;
+        let paddle = framework.entity.create<framework.paddle>("paddle") as framework.paddle;
         paddle.player = player;
         return paddle;
     }

@@ -3,6 +3,8 @@ import * as global from "helpers/globals";
 
 export class net extends framework.entity 
 {
+    private readonly name: string = "net";
+
     private static readonly NET_COLOUR: string = '#7b89a0';    
     private static readonly NET_LENGTH: number = 25;
     private static readonly NET_GAP: number = 35;
@@ -33,11 +35,6 @@ export class net extends framework.entity
     {
         this.rectangle.set(this.canvas.width / 2 - 1, 0, 2, this.resizeRatio(net.NET_LENGTH));        
     };
-
-    static create(): framework.net
-    {
-        return (global.$jsInject.get("net") as framework.net).clone() as framework.net;
-    }
 
     private resizeRatio(input: number): number
     {
