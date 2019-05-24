@@ -2,7 +2,7 @@ import * as framework from "helpers/exports";
 
 export class timeService implements framework.ItimeService
 {
-    timeFunction: Function;
+    private timeFunction: Function;
 
     constructor() 
     {

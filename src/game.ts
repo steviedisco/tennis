@@ -5,9 +5,9 @@ export class game
 {
     $configService: framework.IconfigService;
     $loggerService: framework.IloggerService;
-    $timeService: framework.ItimeService;
-    $inputService: framework.IinputService;
-    $sceneService: framework.IsceneService;
+    $timeService:   framework.ItimeService;
+    $inputService:  framework.IinputService;
+    $sceneService:  framework.IsceneService;
     $updateService: framework.IupdateService;
     $renderService: framework.IrenderService;
 
@@ -43,8 +43,9 @@ export class game
 
     registerEntities(): void
     {
-        global.$jsInject.register("net", ["IrenderService", framework.net]);
-        global.$jsInject.register("paddle", ["IrenderService", "IinputService", framework.paddle]);
+        global.$jsInject.register("net", [framework.net]);
+        global.$jsInject.register("paddle", ["IinputService", framework.paddle]);
+        // global.$jsInject.register("ball", [framework.ball]);
     };
 
     initialise(): void
@@ -54,9 +55,12 @@ export class game
 
         this.$sceneService.addEntity(framework.entity.create<framework.net>("net"));
         this.$sceneService.addEntity(framework.paddle.create(framework.enums.players.PLAYER1));
-        // this.$sceneService.addEntity(framework.paddle.createPaddle(framework.enums.players.PLAYER2));
-        this.$sceneService.finalise();
-        this.$sceneService.initialise();
+        // this.$sceneService.addEntity(framework.paddle.create(framework.enums.players.PLAYER2));
+        // this.$sceneService.addEntity(framework.entity.create<framework.ball>("ball"));
+        this.$sceneService.finaliseChanges();
+        this.$sceneService.initialiseAll();
+
+        this.$renderService.resizeAll();
 
         this.window.addEventListener("resize", () => this.onResize(this.window, this.$renderService));
     };

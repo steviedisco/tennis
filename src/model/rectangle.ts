@@ -31,7 +31,7 @@ export class rectangle implements framework.Irenderable
             this.width = width;
 
         if (height != undefined)
-            this.height = height;        
+            this.height = height;
     };
 
     setColour(colour: string): void
@@ -50,6 +50,4 @@ export class rectangle implements framework.Irenderable
     {
         this.$renderService.drawRectangle(this.position.x, this.position.y, this.width, this.height, this.colour);
     };
-
-    resize(): void { };
 };

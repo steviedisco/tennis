@@ -1,5 +1,4 @@
 import * as framework from "helpers/exports";
-import * as global from "helpers/globals";
 
 export class paddle extends framework.entity 
 {
@@ -7,20 +6,17 @@ export class paddle extends framework.entity
 
     private readonly PADDLE_THICKNESS: number = 15;
     private readonly PADDLE_HEIGHT: number = 130;
+    private readonly PADDLE_HEIGHT_HALF: number = this.PADDLE_HEIGHT / 2;
     private readonly RETURN_DEADZONE: number = 7;
     private readonly HITMOVE_DEADZONE: number = 5;
     private readonly ANGLE_MODIFIER: number = 0.1275;
 
-    private $renderService: framework.IrenderService;
-    private $inputService: framework.IinputService;
+    private $inputService: framework.IinputService;    
 
-    private previousPosition: framework.point = new framework.point();
-
-    constructor(IrenderService: framework.IrenderService, IinputService: framework.IinputService)
+    constructor(IinputService: framework.IinputService)
     {
         super();
 
-        this.$renderService = IrenderService;
         this.$inputService = IinputService;
     };
 
@@ -28,10 +24,7 @@ export class paddle extends framework.entity
     {
         if (this.player == framework.enums.players.PLAYER1)
         {
-            this.rectangle.setPosition(
-                2 * this.PADDLE_THICKNESS, 
-                (this.$renderService.canvas.height / 2) - this.halfPaddleHeight());
-            
+            this.rectangle.setPosition(2 * this.PADDLE_THICKNESS, (framework.renderService.DEFAULT_HEIGHT / 2) - this.PADDLE_HEIGHT_HALF);            
             this.rectangle.setSize(this.PADDLE_THICKNESS, this.PADDLE_HEIGHT);
             this.rectangle.setColour("#e81e2e");
         }  
@@ -40,14 +33,10 @@ export class paddle extends framework.entity
             // TODO
         }              
 
-        this.previousPosition.setFromPoint(this.rectangle.position);
+        this.recordPosition();
 
         this.$inputService.registerMouseMoveListener([this.setPaddlePosition, this]);
     }
-
-    resize(): void
-    {
-    };
 
     static create(player: framework.enums.players): framework.paddle
     {
@@ -58,11 +47,6 @@ export class paddle extends framework.entity
 
     setPaddlePosition(mousePos: framework.point, _this: paddle): void
     {
-        _this.rectangle.setPosition(undefined, mousePos.y - _this.halfPaddleHeight());
-    };
-
-    private halfPaddleHeight(): number
-    {
-        return this.PADDLE_HEIGHT / 2;
+        _this.setPosition(undefined, mousePos.y -_this.PADDLE_HEIGHT_HALF);
     };
 };

@@ -1,17 +1,10 @@
 import * as framework from "helpers/exports";
-import * as global from "helpers/globals";
 
 export class ball extends framework.entity 
 {
-    private readonly name: string = "ball";
-
-    private $renderService: framework.IrenderService;
-
-    constructor(IrenderService: framework.IrenderService)
+    constructor()
     {
         super();
-
-        this.$renderService = IrenderService;
     };
 
     initialise(): void

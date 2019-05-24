@@ -8,8 +8,8 @@ enum action {
 
 export class renderService implements framework.IrenderService, framework.Iinitialisable
 {
-    $configService: framework.IconfigService;
-    $sceneService: framework.IsceneService;
+    private $configService: framework.IconfigService;
+    private $sceneService: framework.IsceneService;
 
     window: Window;
     document: Document;
@@ -21,6 +21,18 @@ export class renderService implements framework.IrenderService, framework.Iiniti
 
     canvas: HTMLCanvasElement;
     canvasContext: CanvasRenderingContext2D;
+
+    backCanvas: HTMLCanvasElement;
+    backCanvasContext: CanvasRenderingContext2D;
+
+    static readonly DEFAULT_WIDTH: number = 800;
+    static readonly DEFAULT_HEIGHT: number = 600;    
+
+    ratioX = () => this.canvas.width / renderService.DEFAULT_WIDTH;
+    ratioY = () => this.canvas.height / renderService.DEFAULT_HEIGHT;
+
+    resizeX = (input: number) => this.ratioX() * input;
+    resizeY = (input: number) => this.ratioY() * input;
 
     constructor(
         IconfigService: framework.IconfigService,
@@ -48,53 +60,56 @@ export class renderService implements framework.IrenderService, framework.Iiniti
         this.document.body.appendChild(this.overlay);
 
         this.initialiseBuffers();
+        this.setCanvasContext();
     };
 
     renderAll(): void
     {
-        this.clear();
-        this.actionEntities(action.RENDER);
+        this.renderEntities();
         this.swapBuffers();
+        this.clear();
     };
 
     resizeAll(): void
     {
-        this.initialiseBuffers();
+        this.buffers.forEach((buffer) => 
+        {            
+            buffer.width = this.window.innerWidth - 1;            
+            buffer.height = this.window.innerHeight - 1;            
+        });      
 
-        this.actionEntities(action.RESIZE);
+        this.overlay.width = this.window.innerWidth - 1;   
+        this.overlay.height = this.window.innerHeight - 1;        
+
+        this.setCanvasContext();
     };
 
     drawRectangle(x: number, y: number, width: number, height: number, colour: string): void
     {
         this.canvasContext.fillStyle = colour;
-        this.canvasContext.fillRect(x, y, width, height);
+        this.canvasContext.fillRect(
+            this.resizeX(x), 
+            this.resizeY(y), 
+            this.resizeX(width),
+            this.resizeY(height));
     };
 
     private clear(): void
     {
-        this.overlayContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.overlayContext.clearRect(0, 0, this.resizeX(this.canvas.width), this.resizeY(this.canvas.height));
 
-        this.drawRectangle(0, 0, this.canvas.width, this.canvas.height, this.$configService.settings.bgColour);
+        this.backCanvasContext.fillStyle = this.$configService.settings.bgColour;
+        this.backCanvasContext.fillRect(0, 0, this.backCanvas.width, this.backCanvas.height);
     };
 
-    private actionEntities(renderAction: action): void
+    private renderEntities(): void
     {
         let entity: framework.entity = null;
 
         while ((entity = this.$sceneService.getNextEntity()))
         {
             if (this.isRenderable(entity))  
-            {
-                switch (renderAction)     
-                {
-                    case action.RENDER:
-                        (entity as Irenderable).render();     
-                        break;
-                    case action.RESIZE:
-                        (entity as Irenderable).resize();
-                        break;
-                }                
-            }
+                (entity as Irenderable).render();
         }
     };
 
@@ -114,27 +129,29 @@ export class renderService implements framework.IrenderService, framework.Iiniti
         this.buffers.forEach((buffer) => 
         {            
             buffer.style["z-index"] = zindex++;
-            buffer.height = this.window.innerHeight - 1;
-            buffer.width = this.window.innerWidth - 1;            
+            buffer.width = renderService.DEFAULT_WIDTH; 
+            buffer.height = renderService.DEFAULT_HEIGHT;
         });      
 
         this.overlay.style["z-index"] = zindex++;
         this.overlay.style["background"] = "transparent";
-        this.overlay.height = this.window.innerHeight - 1;
-        this.overlay.width = this.window.innerWidth - 1;   
-        
-        this.setCanvasContext();
+        this.overlay.width = renderService.DEFAULT_WIDTH;
+        this.overlay.height = renderService.DEFAULT_HEIGHT;
     };
 
     getCanvasContext(): [HTMLCanvasElement, CanvasRenderingContext2D]
     {
         return [ this.canvas, this.canvasContext ];
-    };
+    };    
 
     private setCanvasContext(): void
     {
         this.canvas = this.buffers[this.bufferIndex];
         this.canvasContext = this.canvas.getContext('2d');
+
+        this.backCanvas = this.buffers[1 - this.bufferIndex];
+        this.backCanvasContext = this.canvas.getContext('2d');
+
         this.overlayContext = this.overlay.getContext('2d');
     };    
 

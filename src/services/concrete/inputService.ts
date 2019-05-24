@@ -2,7 +2,7 @@ import * as framework from "helpers/exports";
 
 export class inputService implements framework.IinputService
 {
-    $renderService: framework.IrenderService;
+    private $renderService: framework.IrenderService;
 
     private mouseMoveListeners: [Function, any][] = new Array();
     private mousePos: framework.point = new framework.point();
