@@ -51,7 +51,7 @@ export class game
     initialise(): void
     {
         this.$renderService.initialise([window, document]);
-        this.$inputService.initialise();
+        this.$inputService.initialise([true]);
 
         this.$sceneService.addEntity(framework.entity.create<framework.net>("net"));
         this.$sceneService.addEntity(framework.paddle.create(framework.enums.players.PLAYER1));

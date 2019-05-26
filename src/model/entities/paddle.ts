@@ -24,9 +24,9 @@ export class paddle extends framework.entity
     {
         if (this.player == framework.enums.players.PLAYER1)
         {
-            this.rectangle.setPosition(2 * this.PADDLE_THICKNESS, (framework.renderService.DEFAULT_HEIGHT / 2) - this.PADDLE_HEIGHT_HALF);            
-            this.rectangle.setSize(this.PADDLE_THICKNESS, this.PADDLE_HEIGHT);
-            this.rectangle.setColour("#e81e2e");
+            this.setPosition(2 * this.PADDLE_THICKNESS, (framework.renderService.DEFAULT_HEIGHT / 2) - this.PADDLE_HEIGHT_HALF);            
+            this.setSize(this.PADDLE_THICKNESS, this.PADDLE_HEIGHT);
+            this.setColour("#e81e2e");
         }  
         else
         {
@@ -42,11 +42,12 @@ export class paddle extends framework.entity
     {
         let paddle = framework.entity.create<framework.paddle>("paddle") as framework.paddle;
         paddle.player = player;
+        paddle.debug = true;
         return paddle;
     }
 
     setPaddlePosition(mousePos: framework.point, _this: paddle): void
     {
-        _this.setPosition(undefined, mousePos.y -_this.PADDLE_HEIGHT_HALF);
+        _this.setPosition(undefined, mousePos.y - _this.PADDLE_HEIGHT_HALF);
     };
 };

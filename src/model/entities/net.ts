@@ -13,15 +13,15 @@ export class net extends framework.entity
 
     initialise(): void
     {
-        this.rectangle.set(framework.renderService.DEFAULT_WIDTH / 2 - 1, 0, 2, net.NET_LENGTH);
+        this.set(framework.renderService.DEFAULT_WIDTH / 2 - 1, 0, 2, net.NET_LENGTH);
     };
 
     render(): void
     {        
         for (let i = 0; i < framework.renderService.DEFAULT_HEIGHT; i += net.NET_GAP) 
         {
-            this.rectangle.setPosition(undefined, i);
-            this.rectangle.render();
+            this.setPosition(undefined, i);
+            super.render();
         }
     };  
 };

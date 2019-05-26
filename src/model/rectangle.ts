@@ -4,7 +4,7 @@ import { point } from "helpers/exports";
 
 export class rectangle implements framework.Irenderable
 {    
-    $renderService: framework.IrenderService;
+    protected $renderService: framework.IrenderService;
 
     position: point = new point();
     protected height: number;

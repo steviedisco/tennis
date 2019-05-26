@@ -3,34 +3,35 @@ import * as global from "helpers/globals";
 import { staticDecorator } from "helpers/exports";
 
 @staticDecorator<framework.Icreateable>()
-export abstract class entity implements framework.Irenderable, framework.Iinitialisable
+export abstract class entity extends framework.rectangle implements framework.Irenderable, framework.Iinitialisable
 {    
     id: string;
-    protected rectangle: framework.rectangle;
+    debug: boolean = false;
     protected previousPosition: framework.point = new framework.point();
 
-    constructor(x: number = 0, y: number = 0, height: number = 1, width: number = 1, colour: string = 'pink')
+    constructor(x: number = 0, y: number = 0, height: number = 1, width: number = 1, colour: string = 'pink', debug: boolean = false)
     {                
-        this.id = framework.helpers.generateId();
+        super(colour);
+        super.set(x, y, height, width);
 
-        this.rectangle = new framework.rectangle(colour);
-        this.rectangle.set(x, y, height, width);
+        this.id = framework.helpers.generateId();
+        this.debug = debug;
     };           
 
     abstract initialise(): void;
-
-    position = () => this.rectangle.position;
     
-    setPosition(x: number, y: number): void
-    {
-        this.rectangle.setPosition(x, y);
-    };
-    
-    recordPosition = () => this.previousPosition.setFromPoint(this.position());
+    recordPosition = () => this.previousPosition.setFromPoint(this.position);
 
     render(): void
     {        
-        this.rectangle.render();
+        super.render();
+
+        if (this.debug)
+        {
+            let x: number = this.position.x;
+            let y: number = this.position.y;
+            this.$renderService.drawText(`${x}, ${y}`, x, y);
+        }           
     };
 
     static create<T extends entity>(name: string): entity 

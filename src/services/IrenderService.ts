@@ -13,6 +13,7 @@ export interface IrenderService extends framework.Iinitialisable
     resizeY(input: number): number;
 
     drawRectangle(x: number, y: number, width: number, height: number, colour: string): void;
+    drawText(message: string, x: number, y: number, colour?: string): void;
 
     renderAll(): void; 
     resizeAll(): void;

@@ -7,18 +7,29 @@ export class inputService implements framework.IinputService
     private mouseMoveListeners: [Function, any][] = new Array();
     private mousePos: framework.point = new framework.point();
 
+    private debug: boolean = false;
+
     constructor(IrenderService: framework.IrenderService)
     {
         this.$renderService = IrenderService;
     };
 
-    initialise(): void
-    {
+    initialise(params: any[] = undefined) // Document
+    {    
+        if (params != undefined)
+            this.debug = params[0] as boolean;
+
         this.registerOverlayListener("mousemove", this.handleMouseMove);
     };
 
     process(): void
     {
+        if (this.debug)
+        {
+            let x = this.mousePos.x;
+            let y = this.mousePos.y;
+            this.$renderService.drawText(`${x}, ${y}`, x, y);
+        }           
     };
 
     registerOverlayListener(eventName: string, listener: Function): void

@@ -94,6 +94,12 @@ export class renderService implements framework.IrenderService, framework.Iiniti
             this.resizeY(height));
     };
 
+    drawText(message: string, x: number, y: number, colour: string = "pink"): void
+    {
+        this.canvasContext.fillStyle = colour;
+        this.canvasContext.fillText(message, x, y);
+    };
+
     private clear(): void
     {
         this.overlayContext.clearRect(0, 0, this.resizeX(this.canvas.width), this.resizeY(this.canvas.height));
