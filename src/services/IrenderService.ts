@@ -11,6 +11,5 @@ export interface IrenderService extends framework.Iinitialisable
     drawText(message: string, x: number, y: number, colour?: string): void;
 
     renderAll(): void; 
-    initialiseBuffers(): void;
     getCanvasContext(): [ HTMLCanvasElement, CanvasRenderingContext2D ];
 };

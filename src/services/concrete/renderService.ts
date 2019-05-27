@@ -22,12 +22,9 @@ export class renderService implements framework.IrenderService, framework.Iiniti
 
     backCanvas: HTMLCanvasElement;
     backCanvasContext: CanvasRenderingContext2D;
-
-    static readonly RENDER_WIDTH: number = 800;
-    static readonly RENDER_HEIGHT: number = 600; 
     
-    static readonly DEFAULT_WIDTH: number = 1920;
-    static readonly DEFAULT_HEIGHT: number = 1080;
+    static readonly RENDER_WIDTH: number = 1920;
+    static readonly RENDER_HEIGHT: number = 1080;
 
     constructor(
         IconfigService: framework.IconfigService,
@@ -60,15 +57,16 @@ export class renderService implements framework.IrenderService, framework.Iiniti
 
     renderAll(): void
     {
+        this.renderEntities();
+        
         this.saveCanvasContext();
         this.scaleCanvas();
-        this.renderEntities();
         this.swapBuffers();
-        this.clear();
         this.restoreCanvasContext();
+
+        this.clear();
     };
 
-    /*
     resizeAll(): void
     {
         this.buffers.forEach((buffer) => 
@@ -82,7 +80,6 @@ export class renderService implements framework.IrenderService, framework.Iiniti
 
         this.setCanvasContext();
     };
-    */
 
     drawRectangle(x: number, y: number, width: number, height: number, colour: string): void
     {
@@ -131,14 +128,14 @@ export class renderService implements framework.IrenderService, framework.Iiniti
         this.buffers.forEach((buffer) => 
         {            
             buffer.style["z-index"] = zindex++;
-            buffer.width = renderService.DEFAULT_WIDTH; 
-            buffer.height = renderService.DEFAULT_HEIGHT;
+            buffer.width = renderService.RENDER_WIDTH; 
+            buffer.height = renderService.RENDER_HEIGHT;
         });      
 
         this.overlay.style["z-index"] = zindex++;
         this.overlay.style["background"] = "transparent";
-        this.overlay.width = renderService.DEFAULT_WIDTH;
-        this.overlay.height = renderService.DEFAULT_HEIGHT;
+        this.overlay.width = renderService.RENDER_WIDTH;
+        this.overlay.height = renderService.RENDER_HEIGHT;
     };
 
     getCanvasContext(): [HTMLCanvasElement, CanvasRenderingContext2D]
@@ -153,6 +150,27 @@ export class renderService implements framework.IrenderService, framework.Iiniti
 
         this.overlayContext = this.overlay.getContext('2d');
     };    
+
+    private saveCanvasContext(): void
+    {
+        this.backCanvasContext.save();
+        this.overlayContext.save();
+    };
+
+    private scaleCanvas(): void
+    {
+        let scaleX: number = (this.window.innerWidth - 1) / renderService.RENDER_WIDTH;
+        let scaleY: number = (this.window.innerHeight - 1) / renderService.RENDER_HEIGHT;
+
+        this.backCanvasContext.scale(scaleX, scaleY);
+        this.overlayContext.scale(scaleX, scaleY);
+    };
+
+    private restoreCanvasContext(): void
+    {
+        this.backCanvasContext.restore();
+        this.overlayContext.restore();
+    };
 
     private isRenderable(arg: any): arg is Irenderable 
     {
