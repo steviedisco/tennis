@@ -59,10 +59,6 @@ export class game
         // this.$sceneService.addEntity(framework.entity.create<framework.ball>("ball"));
         this.$sceneService.finaliseChanges();
         this.$sceneService.initialiseAll();
-
-        this.$renderService.resizeAll();
-
-        this.window.addEventListener("resize", () => this.onResize(this.window, this.$renderService));
     };
 
     gameLoop(): void
@@ -88,10 +84,5 @@ export class game
         this.$renderService.renderAll();
 
         this.window.requestAnimationFrame(() => this.gameLoop());
-    };
-
-    onResize(window: Window, renderService: framework.IrenderService): void
-    {
-        window.requestAnimationFrame(() => renderService.resizeAll());
     };
 }

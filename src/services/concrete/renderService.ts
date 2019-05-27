@@ -13,26 +13,21 @@ export class renderService implements framework.IrenderService, framework.Iiniti
 
     window: Window;
     document: Document;
+    
     bufferIndex: number = 0;    
     buffers: HTMLCanvasElement[]; 
 
     overlay: HTMLCanvasElement;
     overlayContext: CanvasRenderingContext2D;
 
-    canvas: HTMLCanvasElement;
-    canvasContext: CanvasRenderingContext2D;
-
     backCanvas: HTMLCanvasElement;
     backCanvasContext: CanvasRenderingContext2D;
 
-    static readonly DEFAULT_WIDTH: number = 800;
-    static readonly DEFAULT_HEIGHT: number = 600;    
-
-    ratioX = () => this.canvas.width / renderService.DEFAULT_WIDTH;
-    ratioY = () => this.canvas.height / renderService.DEFAULT_HEIGHT;
-
-    resizeX = (input: number) => this.ratioX() * input;
-    resizeY = (input: number) => this.ratioY() * input;
+    static readonly RENDER_WIDTH: number = 800;
+    static readonly RENDER_HEIGHT: number = 600; 
+    
+    static readonly DEFAULT_WIDTH: number = 1920;
+    static readonly DEFAULT_HEIGHT: number = 1080;
 
     constructor(
         IconfigService: framework.IconfigService,
@@ -65,11 +60,15 @@ export class renderService implements framework.IrenderService, framework.Iiniti
 
     renderAll(): void
     {
+        this.saveCanvasContext();
+        this.scaleCanvas();
         this.renderEntities();
         this.swapBuffers();
         this.clear();
+        this.restoreCanvasContext();
     };
 
+    /*
     resizeAll(): void
     {
         this.buffers.forEach((buffer) => 
@@ -83,26 +82,23 @@ export class renderService implements framework.IrenderService, framework.Iiniti
 
         this.setCanvasContext();
     };
+    */
 
     drawRectangle(x: number, y: number, width: number, height: number, colour: string): void
     {
-        this.canvasContext.fillStyle = colour;
-        this.canvasContext.fillRect(
-            this.resizeX(x), 
-            this.resizeY(y), 
-            this.resizeX(width),
-            this.resizeY(height));
+        this.backCanvasContext.fillStyle = colour;
+        this.backCanvasContext.fillRect(x, y, width, height);
     };
 
     drawText(message: string, x: number, y: number, colour: string = "pink"): void
     {
-        this.canvasContext.fillStyle = colour;
-        this.canvasContext.fillText(message, x, y);
+        this.backCanvasContext.fillStyle = colour;
+        this.backCanvasContext.fillText(message, x, y);
     };
 
     private clear(): void
     {
-        this.overlayContext.clearRect(0, 0, this.resizeX(this.canvas.width), this.resizeY(this.canvas.height));
+        this.overlayContext.clearRect(0, 0, this.backCanvas.width, this.backCanvas.height);
 
         this.backCanvasContext.fillStyle = this.$configService.settings.bgColour;
         this.backCanvasContext.fillRect(0, 0, this.backCanvas.width, this.backCanvas.height);
@@ -147,16 +143,13 @@ export class renderService implements framework.IrenderService, framework.Iiniti
 
     getCanvasContext(): [HTMLCanvasElement, CanvasRenderingContext2D]
     {
-        return [ this.canvas, this.canvasContext ];
+        return [ this.backCanvas, this.backCanvasContext ];
     };    
 
     private setCanvasContext(): void
     {
-        this.canvas = this.buffers[this.bufferIndex];
-        this.canvasContext = this.canvas.getContext('2d');
-
         this.backCanvas = this.buffers[1 - this.bufferIndex];
-        this.backCanvasContext = this.canvas.getContext('2d');
+        this.backCanvasContext = this.backCanvas.getContext('2d');
 
         this.overlayContext = this.overlay.getContext('2d');
     };    
