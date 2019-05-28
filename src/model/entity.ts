@@ -30,7 +30,7 @@ export abstract class entity extends framework.rectangle implements framework.Ir
         {
             let x: number = this.position.x;
             let y: number = this.position.y;
-            this.$renderService.drawText(`${x}, ${y}`, x, y);
+            this.$renderService.drawText(`${Math.round(x)}, ${Math.round(y)}`, x, y);
         }           
     };
 

@@ -28,7 +28,8 @@ export class inputService implements framework.IinputService
         {
             let x = this.mousePos.x;
             let y = this.mousePos.y;
-            this.$renderService.drawText(`${x}, ${y}`, x, y);
+            let canvasContext = this.$renderService.getCanvasContext();
+            this.$renderService.drawText(`${Math.round(x)}, ${Math.round(y)}`, x, y);
         }           
     };
 
@@ -57,6 +58,10 @@ export class inputService implements framework.IinputService
         let mouseX = evt.clientX - rect.left - root.scrollLeft;
         let mouseY = evt.clientY - rect.top - root.scrollTop;
 
-        this.mousePos.set(mouseX, mouseY);
+        let canvasContext = this.$renderService.getCanvasContext();
+        let scaleX = (framework.renderService.RENDER_WIDTH / canvasContext[0].width);
+        let scaleY = (framework.renderService.RENDER_HEIGHT / canvasContext[0].height);
+
+        this.mousePos.set(mouseX * scaleX, mouseY * scaleY);
     };
 };

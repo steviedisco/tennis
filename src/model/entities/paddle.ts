@@ -4,8 +4,8 @@ export class paddle extends framework.entity
 {
     player: framework.enums.players;
 
-    private readonly PADDLE_THICKNESS: number = 15;
-    private readonly PADDLE_HEIGHT: number = 130;
+    private readonly PADDLE_THICKNESS: number = 25;
+    private readonly PADDLE_HEIGHT: number = 170;
     private readonly PADDLE_HEIGHT_HALF: number = this.PADDLE_HEIGHT / 2;
     private readonly RETURN_DEADZONE: number = 7;
     private readonly HITMOVE_DEADZONE: number = 5;
@@ -20,11 +20,11 @@ export class paddle extends framework.entity
         this.$inputService = IinputService;
     };
 
-    initialise(): void
+    initialise(): void 
     {
         if (this.player == framework.enums.players.PLAYER1)
         {
-            this.setPosition(2 * this.PADDLE_THICKNESS, (framework.renderService.DEFAULT_HEIGHT / 2) - this.PADDLE_HEIGHT_HALF);            
+            this.setPosition(2 * this.PADDLE_THICKNESS, (framework.renderService.RENDER_HEIGHT / 2) - this.PADDLE_HEIGHT_HALF);            
             this.setSize(this.PADDLE_THICKNESS, this.PADDLE_HEIGHT);
             this.setColour("#e81e2e");
         }  

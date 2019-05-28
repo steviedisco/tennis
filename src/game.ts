@@ -73,6 +73,7 @@ export class game
         previous = current;
         lag += elapsed;
 
+        this.$renderService.scaleCanvas();
         this.$inputService.process();
 
         while (lag >= msPerUpdate)

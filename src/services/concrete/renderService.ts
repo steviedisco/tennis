@@ -52,54 +52,54 @@ export class renderService implements framework.IrenderService, framework.Iiniti
         this.document.body.appendChild(this.overlay);
 
         this.initialiseBuffers();
+    };
+
+    initialiseBuffers(): void
+    {
+        let zindex: number = 0;
+
+        this.buffers.forEach((buffer) => 
+        {            
+            buffer.style["z-index"] = zindex++;
+            buffer.width = renderService.RENDER_WIDTH; 
+            buffer.height = renderService.RENDER_HEIGHT;
+        });      
+
+        this.overlay.style["z-index"] = zindex++;
+        this.overlay.style["background"] = "transparent";
+        this.overlay.width = renderService.RENDER_WIDTH;
+        this.overlay.height = renderService.RENDER_HEIGHT;
+
         this.setCanvasContext();
     };
 
     renderAll(): void
-    {
+    {                
         this.renderEntities();
-        
-        this.saveCanvasContext();
-        this.scaleCanvas();
         this.swapBuffers();
         this.restoreCanvasContext();
-
         this.clear();
     };
 
-    resizeAll(): void
+    private saveCanvasContext()
     {
-        this.buffers.forEach((buffer) => 
-        {            
-            buffer.width = this.window.innerWidth - 1;            
-            buffer.height = this.window.innerHeight - 1;            
-        });      
-
-        this.overlay.width = this.window.innerWidth - 1;   
-        this.overlay.height = this.window.innerHeight - 1;        
-
-        this.setCanvasContext();
+        this.backCanvasContext.save();
     };
-
-    drawRectangle(x: number, y: number, width: number, height: number, colour: string): void
+    
+    scaleCanvas(): void
     {
-        this.backCanvasContext.fillStyle = colour;
-        this.backCanvasContext.fillRect(x, y, width, height);
-    };
+        this.backCanvas.width = this.window.innerWidth;
+        this.backCanvas.height = this.window.innerHeight - 1; 
 
-    drawText(message: string, x: number, y: number, colour: string = "pink"): void
-    {
-        this.backCanvasContext.fillStyle = colour;
-        this.backCanvasContext.fillText(message, x, y);
-    };
+        this.saveCanvasContext();
 
-    private clear(): void
-    {
-        this.overlayContext.clearRect(0, 0, this.backCanvas.width, this.backCanvas.height);
-
-        this.backCanvasContext.fillStyle = this.$configService.settings.bgColour;
-        this.backCanvasContext.fillRect(0, 0, this.backCanvas.width, this.backCanvas.height);
-    };
+        let scaleX: number = this.window.innerWidth / renderService.RENDER_WIDTH;
+        let scaleY: number = (this.window.innerHeight - 1) / renderService.RENDER_HEIGHT;
+        this.backCanvasContext.scale(scaleX, scaleY);               
+        
+        this.overlay.width = this.window.innerWidth;   
+        this.overlay.height = this.window.innerHeight - 1;
+    };    
 
     private renderEntities(): void
     {
@@ -121,56 +121,44 @@ export class renderService implements framework.IrenderService, framework.Iiniti
         this.setCanvasContext();
     };
 
-    initialiseBuffers(): void
+    private setCanvasContext(): void
     {
-        let zindex: number = 0;
+        this.backCanvas = this.buffers[this.bufferIndex];
+        this.backCanvasContext = this.backCanvas.getContext('2d');
 
-        this.buffers.forEach((buffer) => 
-        {            
-            buffer.style["z-index"] = zindex++;
-            buffer.width = renderService.RENDER_WIDTH; 
-            buffer.height = renderService.RENDER_HEIGHT;
-        });      
+        this.overlayContext = this.overlay.getContext('2d');
+    };
 
-        this.overlay.style["z-index"] = zindex++;
-        this.overlay.style["background"] = "transparent";
-        this.overlay.width = renderService.RENDER_WIDTH;
-        this.overlay.height = renderService.RENDER_HEIGHT;
+    private restoreCanvasContext()
+    {
+        this.backCanvasContext.restore();
+    };
+    
+    private clear(): void
+    {
+        this.overlayContext.clearRect(0, 0, this.backCanvas.width, this.backCanvas.height);
+
+        this.backCanvasContext.fillStyle = this.$configService.settings.bgColour;
+        this.backCanvasContext.fillRect(0, 0, this.backCanvas.width, this.backCanvas.height);
     };
 
     getCanvasContext(): [HTMLCanvasElement, CanvasRenderingContext2D]
     {
         return [ this.backCanvas, this.backCanvasContext ];
+    };        
+    
+    drawRectangle(x: number, y: number, width: number, height: number, colour: string): void
+    {
+        this.backCanvasContext.fillStyle = colour;
+        this.backCanvasContext.fillRect(x, y, width, height);
+    };
+
+    drawText(message: string, x: number, y: number, colour: string = "pink", font: string = "24px Calibri"): void
+    {
+        this.backCanvasContext.fillStyle = colour;
+        this.backCanvasContext.font = font;
+        this.backCanvasContext.fillText(message, x, y);
     };    
-
-    private setCanvasContext(): void
-    {
-        this.backCanvas = this.buffers[1 - this.bufferIndex];
-        this.backCanvasContext = this.backCanvas.getContext('2d');
-
-        this.overlayContext = this.overlay.getContext('2d');
-    };    
-
-    private saveCanvasContext(): void
-    {
-        this.backCanvasContext.save();
-        this.overlayContext.save();
-    };
-
-    private scaleCanvas(): void
-    {
-        let scaleX: number = (this.window.innerWidth - 1) / renderService.RENDER_WIDTH;
-        let scaleY: number = (this.window.innerHeight - 1) / renderService.RENDER_HEIGHT;
-
-        this.backCanvasContext.scale(scaleX, scaleY);
-        this.overlayContext.scale(scaleX, scaleY);
-    };
-
-    private restoreCanvasContext(): void
-    {
-        this.backCanvasContext.restore();
-        this.overlayContext.restore();
-    };
 
     private isRenderable(arg: any): arg is Irenderable 
     {

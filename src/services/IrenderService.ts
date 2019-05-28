@@ -8,8 +8,9 @@ export interface IrenderService extends framework.Iinitialisable
     overlay: HTMLCanvasElement;
 
     drawRectangle(x: number, y: number, width: number, height: number, colour: string): void;
-    drawText(message: string, x: number, y: number, colour?: string): void;
+    drawText(message: string, x: number, y: number, colour?: string, font?: string): void;
 
+    scaleCanvas(): void;
     renderAll(): void; 
     getCanvasContext(): [ HTMLCanvasElement, CanvasRenderingContext2D ];
 };
