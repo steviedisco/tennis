@@ -23,6 +23,13 @@ export abstract class entity extends framework.rectangle implements framework.Ir
         this.recordPosition();
         super.setPosition(x, y);        
     };
+
+    move(x: number, y: number): void
+    {
+        let currentX = this.position.x;
+        let currentY = this.position.y;
+        this.setPosition(currentX + x, currentY + y);
+    };
     
     private recordPosition = () => this.previousPosition.setFromPoint(this.position);
 
