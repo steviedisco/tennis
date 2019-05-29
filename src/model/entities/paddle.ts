@@ -4,50 +4,10 @@ export class paddle extends framework.entity
 {
     player: framework.enums.players;
 
-    private readonly PADDLE_THICKNESS: number = 25;
-    private readonly PADDLE_HEIGHT: number = 170;
-    private readonly PADDLE_HEIGHT_HALF: number = this.PADDLE_HEIGHT / 2;
-    private readonly RETURN_DEADZONE: number = 7;
-    private readonly HITMOVE_DEADZONE: number = 5;
-    private readonly ANGLE_MODIFIER: number = 0.1275;
-
-    private $inputService: framework.IinputService;    
-
-    constructor(IinputService: framework.IinputService)
-    {
-        super();
-
-        this.$inputService = IinputService;
-    };
-
-    initialise(): void 
-    {
-        if (this.player == framework.enums.players.PLAYER1)
-        {
-            this.setPosition(2 * this.PADDLE_THICKNESS, (framework.renderService.RENDER_HEIGHT / 2) - this.PADDLE_HEIGHT_HALF);            
-            this.setSize(this.PADDLE_THICKNESS, this.PADDLE_HEIGHT);
-            this.setColour("#e81e2e");
-        }  
-        else
-        {
-            // TODO
-        }              
-
-        this.recordPosition();
-
-        this.$inputService.registerMouseMoveListener([this.setPaddlePosition, this]);
-    }
-
-    static create(player: framework.enums.players): framework.paddle
-    {
-        let paddle = framework.entity.create<framework.paddle>("paddle") as framework.paddle;
-        paddle.player = player;
-        paddle.debug = true;
-        return paddle;
-    }
-
-    setPaddlePosition(mousePos: framework.point, _this: paddle): void
-    {
-        _this.setPosition(undefined, mousePos.y - _this.PADDLE_HEIGHT_HALF);
-    };
+    readonly PADDLE_THICKNESS: number = 25;
+    readonly PADDLE_HEIGHT: number = 170;
+    readonly PADDLE_HEIGHT_HALF: number = this.PADDLE_HEIGHT / 2;
+    readonly RETURN_DEADZONE: number = 7;
+    readonly HITMOVE_DEADZONE: number = 5;
+    readonly ANGLE_MODIFIER: number = 0.1275; 
 };

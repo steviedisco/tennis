@@ -44,8 +44,8 @@ export class game
     registerEntities(): void
     {
         global.$jsInject.register("net", [framework.net]);
-        global.$jsInject.register("paddle", ["IinputService", framework.paddle]);
-        // global.$jsInject.register("ball", [framework.ball]);
+        global.$jsInject.register("playerPaddle", ["IinputService", framework.playerPaddle]);
+        global.$jsInject.register("ball", [framework.ball]);
     };
 
     initialise(): void
@@ -53,10 +53,10 @@ export class game
         this.$renderService.initialise([window, document]);
         this.$inputService.initialise([true]);
 
+        this.$sceneService.addEntity(framework.entity.create<framework.ball>("ball"));        
+        this.$sceneService.addEntity(framework.entity.create<framework.playerPaddle>("playerPaddle"));
+        // this.$sceneService.addEntity(framework.entity.create<framework.cpuPaddle>("cpuPaddle"));        
         this.$sceneService.addEntity(framework.entity.create<framework.net>("net"));
-        this.$sceneService.addEntity(framework.paddle.create(framework.enums.players.PLAYER1));
-        // this.$sceneService.addEntity(framework.paddle.create(framework.enums.players.PLAYER2));
-        // this.$sceneService.addEntity(framework.entity.create<framework.ball>("ball"));
         this.$sceneService.finaliseChanges();
         this.$sceneService.initialiseAll();
     };

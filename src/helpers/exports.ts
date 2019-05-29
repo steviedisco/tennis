@@ -27,4 +27,5 @@ export * from "model/rectangle";
 export * from "model/entity";
 export * from "model/entities/net";
 export * from "model/entities/paddle";
+export * from "model/entities/playerPaddle";
 export * from "model/entities/ball";

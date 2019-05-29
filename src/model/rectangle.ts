@@ -48,6 +48,7 @@ export class rectangle implements framework.Irenderable
 
     render(): void
     {
-        this.$renderService.drawRectangle(this.position.x, this.position.y, this.width, this.height, this.colour);
+        if (this.width > 0 && this.height > 0)
+            this.$renderService.drawRectangle(this.position.x, this.position.y, this.width, this.height, this.colour);
     };
 };

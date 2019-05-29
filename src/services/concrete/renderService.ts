@@ -89,16 +89,16 @@ export class renderService implements framework.IrenderService, framework.Iiniti
     scaleCanvas(): void
     {
         this.backCanvas.width = this.window.innerWidth;
-        this.backCanvas.height = this.window.innerHeight - 1; 
+        this.backCanvas.height = this.window.innerHeight; 
 
         this.saveCanvasContext();
 
         let scaleX: number = this.window.innerWidth / renderService.RENDER_WIDTH;
-        let scaleY: number = (this.window.innerHeight - 1) / renderService.RENDER_HEIGHT;
+        let scaleY: number = this.window.innerHeight / renderService.RENDER_HEIGHT;
         this.backCanvasContext.scale(scaleX, scaleY);               
         
         this.overlay.width = this.window.innerWidth;   
-        this.overlay.height = this.window.innerHeight - 1;
+        this.overlay.height = this.window.innerHeight;
     };    
 
     private renderEntities(): void
@@ -145,7 +145,15 @@ export class renderService implements framework.IrenderService, framework.Iiniti
     getCanvasContext(): [HTMLCanvasElement, CanvasRenderingContext2D]
     {
         return [ this.backCanvas, this.backCanvasContext ];
-    };        
+    };   
+
+    drawCircle(x: number, y: number, radius: number, colour: string): void
+    {
+        this.backCanvasContext.fillStyle = colour;
+        this.backCanvasContext.beginPath();
+        this.backCanvasContext.arc(x, y, radius, 0, Math.PI*2, true);
+        this.backCanvasContext.fill();
+    };
     
     drawRectangle(x: number, y: number, width: number, height: number, colour: string): void
     {

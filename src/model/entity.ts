@@ -3,13 +3,13 @@ import * as global from "helpers/globals";
 import { staticDecorator } from "helpers/exports";
 
 @staticDecorator<framework.Icreateable>()
-export abstract class entity extends framework.rectangle implements framework.Irenderable, framework.Iinitialisable
+export abstract class entity extends framework.rectangle implements framework.Irenderable
 {    
     id: string;
     debug: boolean = false;
     protected previousPosition: framework.point = new framework.point();
 
-    constructor(x: number = 0, y: number = 0, height: number = 1, width: number = 1, colour: string = 'pink', debug: boolean = false)
+    constructor(x: number = 0, y: number = 0, height: number = 0, width: number = 0, colour: string = 'pink', debug: boolean = false)
     {                
         super(colour);
         super.set(x, y, height, width);
@@ -18,9 +18,13 @@ export abstract class entity extends framework.rectangle implements framework.Ir
         this.debug = debug;
     };           
 
-    abstract initialise(): void;
+    setPosition(x: number, y: number): void
+    {
+        this.recordPosition();
+        super.setPosition(x, y);        
+    };
     
-    recordPosition = () => this.previousPosition.setFromPoint(this.position);
+    private recordPosition = () => this.previousPosition.setFromPoint(this.position);
 
     render(): void
     {        
