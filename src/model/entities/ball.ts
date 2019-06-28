@@ -2,9 +2,9 @@ import * as framework from "helpers/exports";
 
 export class ball extends framework.entity implements framework.Iupdateable
 {
-    static readonly BALL_RADIUS: number = 14;
+    static readonly BALL_RADIUS: number = 50; // 14;
 
-    protected speedX: number = 5;
+    protected speedX: number = -10;
 
     constructor()
     {

@@ -27,9 +27,12 @@ export class game
         this.registerServices();
         this.registerEntities();
 
-        this.initialise();            
+        this.initialise();
 
-        this.window.requestAnimationFrame(() => this.gameLoop());
+        var framesPerSecond = 60;
+        setInterval(this.gameLoop.bind(this), 1000/framesPerSecond);
+        
+        // this.window.requestAnimationFrame(() => this.gameLoop());
     };
 
     registerServices(): void
@@ -75,18 +78,17 @@ export class game
 
         this.previous = current;
         lag += elapsed;
-
-        this.$renderService.scaleCanvas();
+        
         this.$inputService.process();
 
         while (lag >= msPerUpdate)
-        {
+        {            
             this.$updateService.update();
-            lag -= msPerUpdate;
+            lag -= msPerUpdate;            
         }
 
         this.$renderService.renderAll();
 
-        this.window.requestAnimationFrame(() => this.gameLoop());
+        // this.window.requestAnimationFrame(() => this.gameLoop());
     };
 }
