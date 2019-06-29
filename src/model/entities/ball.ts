@@ -4,7 +4,7 @@ export class ball extends framework.entity implements framework.Iupdateable
 {
     static readonly BALL_RADIUS: number = 50; // 14;
 
-    protected speedX: number = -10;
+    protected speedX: number = -20;
 
     constructor()
     {

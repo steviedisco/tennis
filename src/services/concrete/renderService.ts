@@ -13,6 +13,7 @@ export class renderService implements framework.IrenderService, framework.Iiniti
 
     window: Window;
     document: Document;
+    clientHeight: number;
     
     bufferIndex: number = 0;    
     buffers: HTMLCanvasElement[]; 
@@ -42,6 +43,15 @@ export class renderService implements framework.IrenderService, framework.Iiniti
         this.window = params[0] as Window;
         this.document = params[1] as Document;
 
+        let self = this;
+        let root = self.document.documentElement;
+        self.clientHeight = root.clientHeight;
+        
+        window.addEventListener('resize', function() {
+            let root = self.document.documentElement;
+            self.clientHeight = root.clientHeight;
+        }, false);
+
         this.buffers = [
             this.document.createElement('canvas'),
             this.document.createElement('canvas')
@@ -54,24 +64,24 @@ export class renderService implements framework.IrenderService, framework.Iiniti
         this.overlay = this.document.createElement('canvas');
         this.document.body.appendChild(this.overlay);
 
+        this.overlayContext = this.overlay.getContext('2d');
+
         this.initialiseBuffers();
         this.setCanvasContext();
     };
 
-    initialiseBuffers(): void
-    {
+    initialiseBuffers(): void {
         let zindex: number = 0;
-
-        this.buffers.forEach((buffer) => 
-        {            
+        
+        this.buffers.forEach((buffer) => {
             buffer.style["z-index"] = zindex++;
             buffer.style.visibility = "hidden";
-        });      
+        });
 
         this.overlay.style["z-index"] = zindex++;
         this.overlay.style["background"] = "transparent";
-    };
-
+    }
+    
     renderAll(): void
     {        
         this.scaleCanvas(this.backCanvas);
@@ -84,22 +94,21 @@ export class renderService implements framework.IrenderService, framework.Iiniti
         this.setCanvasContext();
 
         this.scaleCanvas(this.overlay);
-        this.centreCanvas(this.overlay);
+        this.centreCanvas(this.overlay);        
+        this.overlayContext.clearRect(0, 0, renderService.RENDER_WIDTH, renderService.RENDER_HEIGHT);
     };
     
     private scaleCanvas(canvas: HTMLCanvasElement): void
     {
-        let root = this.document.documentElement;        
-        let height = root.clientHeight;
         let baseScale = renderService.RENDER_WIDTH / renderService.RENDER_HEIGHT;
-        let scaleX: number = (height * baseScale) / renderService.RENDER_WIDTH;
+        let scaleX: number = (this.clientHeight * baseScale) / renderService.RENDER_WIDTH;
         let width = renderService.RENDER_WIDTH * scaleX;
 
         if (canvas.width != width)
             canvas.width = width;
 
-        if (canvas.height != height)
-            canvas.height = height;
+        if (canvas.height != this.clientHeight)
+            canvas.height = this.clientHeight;
         
         // keep to 16:9
         let scaleY: number = canvas.height / renderService.RENDER_HEIGHT;
@@ -132,8 +141,6 @@ export class renderService implements framework.IrenderService, framework.Iiniti
     {
         this.backCanvas = this.buffers[this.bufferIndex];
         this.backCanvasContext = this.backCanvas.getContext('2d');
-
-        this.overlayContext = this.overlay.getContext('2d');
     };
 
     private centreCanvas(canvas: HTMLCanvasElement): void
@@ -146,8 +153,6 @@ export class renderService implements framework.IrenderService, framework.Iiniti
     
     private clear(): void
     {
-        // this.overlayContext.clearRect(0, 0, this.backCanvas.width, this.backCanvas.height);
-
         let debugSize = 5;
         this.drawRectangle(0, 0, renderService.RENDER_WIDTH, renderService.RENDER_HEIGHT, "red");
         this.drawRectangle(debugSize, debugSize, renderService.RENDER_WIDTH - (debugSize*2), renderService.RENDER_HEIGHT - (debugSize*2), this.$configService.settings.bgColour);
